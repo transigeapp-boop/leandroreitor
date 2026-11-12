@@ -78,11 +78,58 @@
     }, 160);
   });
 
-  /* ---------- princípios ---------- */
-  var tr = $("#trilho");
+  /* ---------- princípios carrossel ---------- */
+  var tr = $("#trilho"), bPrev = $("#priPrev"), bNext = $("#priNext");
+  var barra = $("#priBarra"), cont = $("#priContador");
+  var totalPri = D.principios.length;
+
   D.principios.forEach(function (p, i) {
-    tr.appendChild(el("article", { class: "pri" }, '<div class="ck">' + ICO.check + "<b>" + String(i + 1).padStart(2, "0") + "</b></div><h3>" + esc(p[0]) + "</h3><p>" + esc(p[1]) + "</p>"));
+    tr.appendChild(el("article", { class: "pri" },
+      '<div class="ck">' + ICO.check + "<b>" + String(i + 1).padStart(2, "0") + "</b></div><h3>" + esc(p[0]) + "</h3><p>" + esc(p[1]) + "</p>"
+    ));
   });
+
+  function passoCard() {
+    var card = tr.querySelector(".pri");
+    return card ? card.offsetWidth + 16 : 300;
+  }
+
+  function atualizaControles() {
+    var maxScroll = tr.scrollWidth - tr.clientWidth;
+    var sl = tr.scrollLeft;
+    var idx = 0;
+    if (maxScroll > 1) {
+      var progresso = Math.min(1, Math.max(0, sl / maxScroll));
+      barra.style.width = Math.max(8.33, Math.round(progresso * 100)) + "%";
+      idx = Math.min(totalPri - 1, Math.round(sl / passoCard()));
+    } else {
+      barra.style.width = "100%";
+      idx = 0;
+    }
+    if (cont) cont.textContent = String(idx + 1).padStart(2, "0") + " / " + String(totalPri).padStart(2, "0");
+    if (bPrev) bPrev.disabled = sl <= 5;
+    if (bNext) bNext.disabled = sl >= maxScroll - 5;
+  }
+
+  if (bPrev) {
+    bPrev.onclick = function () {
+      tr.scrollBy({ left: -passoCard(), behavior: "smooth" });
+    };
+  }
+  if (bNext) {
+    bNext.onclick = function () {
+      tr.scrollBy({ left: passoCard(), behavior: "smooth" });
+    };
+  }
+
+  tr.addEventListener("scroll", function () {
+    requestAnimationFrame(atualizaControles);
+  }, { passive: true });
+
+  window.addEventListener("resize", function () {
+    atualizaControles();
+  });
+  setTimeout(atualizaControles, 120);
 
   /* ---------- trajetória ---------- */
   var ln = $("#linha");
