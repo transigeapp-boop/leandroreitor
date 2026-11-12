@@ -91,34 +91,55 @@
 
   function passoCard() {
     var card = tr.querySelector(".pri");
-    return card ? card.offsetWidth + 16 : 300;
+    return card ? card.offsetWidth + 16 : 320;
   }
 
   function atualizaControles() {
     var maxScroll = tr.scrollWidth - tr.clientWidth;
     var sl = tr.scrollLeft;
-    var idx = 0;
-    if (maxScroll > 1) {
-      var progresso = Math.min(1, Math.max(0, sl / maxScroll));
-      barra.style.width = Math.max(8.33, Math.round(progresso * 100)) + "%";
-      idx = Math.min(totalPri - 1, Math.round(sl / passoCard()));
-    } else {
-      barra.style.width = "100%";
-      idx = 0;
-    }
+    var step = passoCard();
+    var idx = Math.min(totalPri - 1, Math.max(0, Math.round(sl / step)));
+    var progresso = (idx + 1) / totalPri;
+    if (barra) barra.style.width = Math.round(progresso * 100) + "%";
     if (cont) cont.textContent = String(idx + 1).padStart(2, "0") + " / " + String(totalPri).padStart(2, "0");
-    if (bPrev) bPrev.disabled = sl <= 5;
-    if (bNext) bNext.disabled = sl >= maxScroll - 5;
+    if (bPrev) {
+      var isStart = sl <= 10;
+      bPrev.disabled = isStart;
+      bPrev.style.opacity = isStart ? "0.3" : "1";
+      bPrev.style.cursor = isStart ? "not-allowed" : "pointer";
+    }
+    if (bNext) {
+      var isEnd = sl >= maxScroll - 10;
+      bNext.disabled = isEnd;
+      bNext.style.opacity = isEnd ? "0.3" : "1";
+      bNext.style.cursor = isEnd ? "not-allowed" : "pointer";
+    }
   }
 
   if (bPrev) {
     bPrev.onclick = function () {
-      tr.scrollBy({ left: -passoCard(), behavior: "smooth" });
+      var step = passoCard();
+      var currentIdx = Math.round(tr.scrollLeft / step);
+      var targetIdx = Math.max(0, currentIdx - 1);
+      var cards = tr.querySelectorAll(".pri");
+      if (cards[targetIdx]) {
+        cards[targetIdx].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+      } else {
+        tr.scrollBy({ left: -step, behavior: "smooth" });
+      }
     };
   }
   if (bNext) {
     bNext.onclick = function () {
-      tr.scrollBy({ left: passoCard(), behavior: "smooth" });
+      var step = passoCard();
+      var currentIdx = Math.round(tr.scrollLeft / step);
+      var targetIdx = Math.min(totalPri - 1, currentIdx + 1);
+      var cards = tr.querySelectorAll(".pri");
+      if (cards[targetIdx]) {
+        cards[targetIdx].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+      } else {
+        tr.scrollBy({ left: step, behavior: "smooth" });
+      }
     };
   }
 
