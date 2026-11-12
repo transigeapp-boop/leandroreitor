@@ -1,0 +1,14 @@
+{
+  "name": "leandroreitor-site",
+  "version": "1.0.0",
+  "description": "Site da campanha Leandro Reitor - IFAM",
+  "private": true,
+  "scripts": {
+    "dev": "serve . -p 3000",
+    "start": "serve . -p 3000",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

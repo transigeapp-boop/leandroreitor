@@ -1,0 +1,38 @@
+SITE LEANDRO REITOR — leandroreitor.com.br
+==========================================
+
+COMO PUBLICAR
+  Suba a pasta inteira (com index.html na raiz) no mesmo serviço usado
+  no site do Taveira (Netlify: arrastar a pasta em app.netlify.com/drop
+  e depois apontar o domínio leandroreitor.com.br).
+  Não precisa de servidor nem banco de dados: é um site estático.
+
+ONDE EDITAR
+  assets/dados.js  -> todos os textos do Plano de Gestão, a trajetória,
+                      a data da eleição e os links (WhatsApp, formulário,
+                      Instagram, playlist, Lattes, PDF).
+
+ATALHOS (bons para QR codes e para mandar no WhatsApp)
+  leandroreitor.com.br/estudantes      propostas para estudantes
+  leandroreitor.com.br/servidores      propostas para servidores
+  leandroreitor.com.br/terceirizados   propostas para terceirizados
+  leandroreitor.com.br/propostas       os 8 eixos
+  leandroreitor.com.br/moldura         moldura da campanha
+  leandroreitor.com.br/participe       canais da campanha
+  Cada proposta também tem link próprio, ex.: /#eixo-2-4 ou /#seg-servidores-3
+
+MOLDURA
+  Gerada no próprio celular (canvas). A foto nunca é enviada.
+  Formatos: Perfil (PNG redondo, fundo transparente), Post 1080x1350,
+  Story 1080x1920 (com áreas seguras do Instagram).
+  Modelos: "Moldura colorida" e "Faixa". Etiqueta opcional:
+  "Sou estudante/docente/TAE e voto".
+
+FONTES
+  Títulos: Now (cai para Poppins enquanto os arquivos não estiverem aqui).
+  Para ativar a Now, coloque em assets/fonts/ os arquivos now-bold.woff2
+  (ou now-bold.otf) e now-medium.woff2 (ou now-medium.otf).
+  Textos: Nunito. Títulos das propostas: Athiti.
+
+PRIVACIDADE
+  O site não usa cookies, não coleta dados e não tem rastreamento.
