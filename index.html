@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/img/icon-180.png">
 <link rel="preload" href="assets/fonts/poppins-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/poppins-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/estilo.css?v=2">
+<link rel="stylesheet" href="assets/estilo.css?v=5">
 <style>
 .carrossel-wrap{position:relative}
 .carrossel-controles{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;padding:12px 0 10px!important;max-width:440px!important;margin:0 auto!important}
@@ -79,6 +79,33 @@
   <div class="wrap">
     <strong><small>Eleição para Reitor do IFAM</small>26 e 27 de novembro</strong>
     <div class="contagem" id="contagem" aria-live="off"></div>
+    <script>
+    (function(){
+      var alvo = new Date("2026-11-26T08:00:00-04:00").getTime();
+      var c = document.getElementById("contagem");
+      function tick() {
+        if (!c) c = document.getElementById("contagem");
+        if (!c) return;
+        var d = alvo - Date.now();
+        if (d <= 0) { c.innerHTML = '<div style="min-width:auto;padding:8px 14px"><b style="font-size:17px">É hoje! Vote Leandro</b></div>'; return; }
+        var dias = Math.floor(d / 864e5),
+            h = Math.floor(d % 864e5 / 36e5),
+            m = Math.floor(d % 36e5 / 6e4),
+            s = Math.floor(d % 6e4 / 1e3);
+        c.innerHTML = [
+          [dias, dias === 1 ? "dia" : "dias"],
+          [h, "horas"],
+          [m, "min"],
+          [s, "seg"]
+        ].map(function (x) {
+          return "<div><b>" + String(x[0]).padStart(2, "0") + "</b><span>" + x[1] + "</span></div>";
+        }).join("");
+      }
+      tick();
+      if (window._cronometro) clearInterval(window._cronometro);
+      window._cronometro = setInterval(tick, 1000);
+    })();
+    </script>
   </div>
 </div>
 <div class="cores" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -313,7 +340,7 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script src="assets/dados.js?v=2"></script>
-<script src="assets/app.js?v=2"></script>
+<script src="assets/app.js?v=20261117_4"></script>
 <script src="assets/moldura.js?v=2"></script>
 </body>
 </html>

@@ -21,16 +21,26 @@
   };
 
   /* ---------- contagem regressiva ---------- */
-  var alvo = new Date(D.config.eleicao).getTime(), cont = $("#contagem");
-  function tick() {
-    var d = alvo - Date.now();
-    if (d <= 0) { cont.innerHTML = '<div style="min-width:auto;padding:8px 14px"><b style="font-size:17px">É hoje! Vote Leandro</b></div>'; return; }
-    var dias = Math.floor(d / 864e5), h = Math.floor(d % 864e5 / 36e5), m = Math.floor(d % 36e5 / 6e4);
-    cont.innerHTML = [[dias, dias === 1 ? "dia" : "dias"], [h, "horas"], [m, "min"]].map(function (x) {
-      return "<div><b>" + String(x[0]).padStart(2, "0") + "</b><span>" + x[1] + "</span></div>";
-    }).join("");
+  if (!window._cronometro) {
+    var alvo = new Date(D.config.eleicao).getTime(), cont = $("#contagem");
+    function tick() {
+      var d = alvo - Date.now();
+      if (d <= 0) { cont.innerHTML = '<div style="min-width:auto;padding:8px 14px"><b style="font-size:17px">É hoje! Vote Leandro</b></div>'; return; }
+      var dias = Math.floor(d / 864e5),
+          h = Math.floor(d % 864e5 / 36e5),
+          m = Math.floor(d % 36e5 / 6e4),
+          s = Math.floor(d % 6e4 / 1e3);
+      cont.innerHTML = [
+        [dias, dias === 1 ? "dia" : "dias"],
+        [h, "horas"],
+        [m, "min"],
+        [s, "seg"]
+      ].map(function (x) {
+        return "<div><b>" + String(x[0]).padStart(2, "0") + "</b><span>" + x[1] + "</span></div>";
+      }).join("");
+    }
+    tick(); window._cronometro = setInterval(tick, 1000);
   }
-  tick(); setInterval(tick, 30000);
 
   /* ---------- segmentos ---------- */
   var segWrap = $("#segmentos");
