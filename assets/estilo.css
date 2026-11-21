@@ -382,9 +382,77 @@ body.rolou .topo .lock{opacity:1;transform:none}
 
 /* rodapé */
 footer{background:var(--navy);color:#C9CFF0;padding:40px 0 30px;font-size:14px}
-footer .wrap{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
-footer img{height:84px;width:auto}
-footer b{color:#fff}
+footer .wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+.footer-marca{display:flex;align-items:center;gap:18px}
+.footer-marca img{height:84px;width:auto}
+.footer-marca b{color:#fff}
+
+/* contador de acessos */
+.contador-box{
+  display:inline-flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.14);
+  padding:12px 18px;
+  border-radius:16px;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  box-shadow:0 8px 24px rgba(0,0,0,.15);
+  transition:transform .2s ease,border-color .2s;
+}
+.contador-box:hover{
+  border-color:rgba(245,194,55,.45);
+  transform:translateY(-2px);
+}
+.contador-header{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.contador-status{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#10B981;
+  box-shadow:0 0 0 0 rgba(16,185,129,.7);
+  animation:pulsoStatus 2s infinite;
+}
+@keyframes pulsoStatus{
+  0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}
+  70%{box-shadow:0 0 0 7px rgba(16,185,129,0)}
+  100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
+}
+.contador-label{
+  font:700 11px var(--tit,sans-serif);
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  color:#C9CFF0;
+}
+.contador-display{
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+}
+.contador-digitos{
+  font:800 clamp(22px,4vw,28px)/1 var(--tit,sans-serif);
+  color:var(--amarelo);
+  letter-spacing:1.5px;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 2px 10px rgba(245,194,55,.2);
+}
+.contador-sufixo{
+  font:700 11px var(--tit,sans-serif);
+  color:#9AA5D8;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+@media (max-width:760px){
+  footer .wrap{flex-direction:column;align-items:flex-start;gap:20px}
+  .contador-box{align-items:flex-start;width:100%;box-sizing:border-box}
+}
 
 /* painel (propostas) */
 .painel{position:fixed;inset:0;z-index:60;display:none}

@@ -305,4 +305,87 @@
     var rv = new IntersectionObserver(function (ents) { ents.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("vis"); rv.unobserve(en.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
     document.querySelectorAll(".revela").forEach(function (x) { rv.observe(x); });
   } else document.querySelectorAll(".revela").forEach(function (x) { x.classList.add("vis"); });
+  /* ---------- contador de acessos ---------- */
+  (function () {
+    var BASE = 7400;
+    var elDigitos = document.getElementById("valorContador");
+    if (!elDigitos) return;
+
+    var KEY_LOCAL = "lr_acessos_total";
+    var KEY_SESSAO = "lr_visita_contada";
+
+    function formatar(num) {
+      try {
+        return Number(num).toLocaleString("pt-BR");
+      } catch (e) {
+        return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+    }
+
+    function animarNumero(de, para, duracao) {
+      if (de === para) {
+        elDigitos.textContent = formatar(para);
+        return;
+      }
+      var inicio = performance.now();
+      function passo(agora) {
+        var progresso = Math.min((agora - inicio) / duracao, 1);
+        var easeOut = 1 - Math.pow(1 - progresso, 3);
+        var valor = Math.round(de + (para - de) * easeOut);
+        elDigitos.textContent = formatar(valor);
+        if (progresso < 1) {
+          requestAnimationFrame(passo);
+        } else {
+          elDigitos.textContent = formatar(para);
+        }
+      }
+      requestAnimationFrame(passo);
+    }
+
+    var salvo = parseInt(localStorage.getItem(KEY_LOCAL), 10);
+    var valorAtual = (!isNaN(salvo) && salvo >= BASE) ? salvo : BASE;
+    elDigitos.textContent = formatar(valorAtual);
+
+    var jaContouSessao = false;
+    try {
+      jaContouSessao = sessionStorage.getItem(KEY_SESSAO) === "1";
+    } catch (e) {}
+
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 4000) : null;
+    var endpoint = "https://counterapi.com/api/leandroreitor-site-2026/view/principal";
+
+    fetch(endpoint, {
+      method: "GET",
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (timeoutId) clearTimeout(timeoutId);
+        var apiVal = parseInt(data.value, 10);
+        if (!isNaN(apiVal) && apiVal > 0) {
+          var novoTotal = BASE + apiVal;
+          if (novoTotal > valorAtual) {
+            animarNumero(valorAtual, novoTotal, 1000);
+            try { localStorage.setItem(KEY_LOCAL, novoTotal); } catch (e) {}
+          }
+        }
+        try { sessionStorage.setItem(KEY_SESSAO, "1"); } catch (e) {}
+      })
+      .catch(function () {
+        if (timeoutId) clearTimeout(timeoutId);
+        if (!jaContouSessao) {
+          var novoTotal = valorAtual + 1;
+          animarNumero(valorAtual, novoTotal, 700);
+          try {
+            localStorage.setItem(KEY_LOCAL, novoTotal);
+            sessionStorage.setItem(KEY_SESSAO, "1");
+          } catch (e) {}
+        }
+      });
+  })();
 })();

@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="assets/img/icon-180.png">
 <link rel="preload" href="assets/fonts/poppins-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/poppins-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/estilo.css?v=6">
+<link rel="stylesheet" href="assets/estilo.css?v=7">
 <style>
 .carrossel-wrap{position:relative}
 .carrossel-controles{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;padding:12px 0 10px!important;max-width:440px!important;margin:0 auto!important}
@@ -314,10 +314,21 @@
 
 <footer>
   <div class="wrap">
-    <img src="assets/img/logo-branco.png" alt="Juntos para o IFAM ir mais longe!" width="54" height="84" loading="lazy">
-    <div>
-      <b>Leandro Reitor</b> · Prof. Leandro Damasceno, candidato a Reitor do IFAM<br>
-      Eleição: 26 e 27 de novembro de 2026
+    <div class="footer-marca">
+      <img src="assets/img/logo-branco.png" alt="Juntos para o IFAM ir mais longe!" width="54" height="84" loading="lazy">
+      <div>
+        <b>Leandro Reitor</b> · Prof. Leandro Damasceno, candidato a Reitor do IFAM<br>
+        Eleição: 26 e 27 de novembro de 2026
+      </div>
+    </div>
+    <div class="contador-box" id="contadorVisitas" role="status" aria-label="Contador de acessos ao site">
+      <div class="contador-header">
+        <span class="contador-status" aria-hidden="true"></span>
+        <span class="contador-label">Acessos ao site</span>
+      </div>
+      <div class="contador-display">
+        <span class="contador-digitos" id="valorContador">7.400</span>
+      </div>
     </div>
   </div>
 </footer>
@@ -340,7 +351,7 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script src="assets/dados.js?v=2"></script>
-<script src="assets/app.js?v=20261117_4"></script>
+<script src="assets/app.js?v=20261121_1"></script>
 <script src="assets/moldura.js?v=2"></script>
 </body>
 </html>
