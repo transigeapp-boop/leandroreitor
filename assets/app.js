@@ -20,27 +20,116 @@
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="19" height="19" rx="3" stroke-width="2"/><path d="M7 12.5l3.2 3.2L17.5 8"/></svg>'
   };
 
-  /* ---------- contagem regressiva ---------- */
-  if (!window._cronometro) {
-    var alvo = new Date(D.config.eleicao).getTime(), cont = $("#contagem");
-    function tick() {
-      var d = alvo - Date.now();
-      if (d <= 0) { cont.innerHTML = '<div style="min-width:auto;padding:8px 14px"><b style="font-size:17px">É hoje! Vote Leandro</b></div>'; return; }
-      var dias = Math.floor(d / 864e5),
-          h = Math.floor(d % 864e5 / 36e5),
-          m = Math.floor(d % 36e5 / 6e4),
-          s = Math.floor(d % 6e4 / 1e3);
-      cont.innerHTML = [
-        [dias, dias === 1 ? "dia" : "dias"],
-        [h, "horas"],
-        [m, "min"],
-        [s, "seg"]
-      ].map(function (x) {
-        return "<div><b>" + String(x[0]).padStart(2, "0") + "</b><span>" + x[1] + "</span></div>";
-      }).join("");
+  /* ---------- vitória, confetes (canvas-confetti) e celebração ---------- */
+  (function () {
+    var cores = ["#0445AD", "#FCBD04", "#FFED00", "#029828", "#E60316", "#FFFFFF"];
+
+    function dispararConfetes(intenso) {
+      if (typeof window.confetti !== "function") return;
+      var duracao = intenso ? 4500 : 2800;
+      var fim = Date.now() + duracao;
+      var ultimoQuadro = 0;
+      (function quadro(agora) {
+        if (!ultimoQuadro || agora - ultimoQuadro >= 45) {
+          ultimoQuadro = agora;
+          window.confetti({
+            particleCount: intenso ? 4 : 3,
+            angle: 270,
+            spread: 110,
+            startVelocity: 18,
+            gravity: 0.58,
+            drift: (Math.random() - 0.5) * 0.7,
+            origin: { x: Math.random(), y: -0.05 },
+            colors: cores,
+            ticks: 420,
+            scalar: 0.95
+          });
+        }
+        if (Date.now() < fim) requestAnimationFrame(quadro);
+      })(performance.now());
+      if (intenso) {
+        window.confetti({
+          particleCount: 45,
+          angle: 60,
+          spread: 58,
+          startVelocity: 46,
+          gravity: 0.65,
+          origin: { x: 0, y: 0.72 },
+          colors: cores,
+          ticks: 360,
+          scalar: 0.95
+        });
+        window.confetti({
+          particleCount: 45,
+          angle: 120,
+          spread: 58,
+          startVelocity: 46,
+          gravity: 0.65,
+          origin: { x: 1, y: 0.72 },
+          colors: cores,
+          ticks: 360,
+          scalar: 0.95
+        });
+      }
     }
-    tick(); window._cronometro = setInterval(tick, 1000);
-  }
+
+    var frases = [
+      "🎉 Ganhamos!! Leandro é Reitor Eleito do IFAM!",
+      "🏆 Obrigado, comunidade do IFAM!",
+      "🎊 Juntos para o IFAM ir mais longe!",
+      "💚💛💙 Vitória construída por todos nós!"
+    ];
+    var cliques = 0;
+    try { cliques = parseInt(localStorage.getItem("lr_vitoria_cliques"), 10) || 0; } catch (e) {}
+
+    var placar = $("#vitoriaPlacar"), elCliques = $("#vitoriaCliques");
+    function atualizaPlacar() {
+      if (!placar || !elCliques) return;
+      if (cliques > 0) {
+        placar.hidden = false;
+        elCliques.textContent = cliques.toLocaleString("pt-BR");
+      }
+    }
+    atualizaPlacar();
+
+    function comemorar() {
+      dispararConfetes(true);
+      cliques++;
+      try { localStorage.setItem("lr_vitoria_cliques", String(cliques)); } catch (e) {}
+      atualizaPlacar();
+      toast(frases[(cliques - 1) % frases.length]);
+    }
+
+    var bComemorar = $("#btnComemorar");
+    if (bComemorar) bComemorar.addEventListener("click", comemorar);
+
+    // Link de comemoração no WhatsApp (api.whatsapp.com preserva emojis UTF-8 sem virar "?")
+    var msgWpp = "🎉🏆 GANHAMOS!! Votação encerrada e Leandro Damasceno é o novo Reitor eleito do IFAM! Obrigado a toda a comunidade por fazer parte dessa vitória! 💚💛💙 Juntos para o IFAM ir mais longe: " + D.config.site;
+    var urlWpp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(msgWpp);
+    var bWpp = $("#btnWppVitoria");
+    if (bWpp) bWpp.href = urlWpp;
+
+    // Fechar / reabrir tarja flutuante
+    var flutuante = $("#vitoriaFloat"), btnMin = $("#vfMinimizar"), btnAbrir = $("#vfAbrir");
+    if (btnMin && flutuante) {
+      btnMin.addEventListener("click", function () {
+        flutuante.classList.add("minimizado");
+      });
+    }
+    if (btnAbrir && flutuante) {
+      btnAbrir.addEventListener("click", function () {
+        flutuante.classList.remove("minimizado");
+      });
+    }
+
+    // Disparo inicial de confetes assim que canvas-confetti carregar
+    var reduzido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduzido) {
+      window.addEventListener("load", function () {
+        setTimeout(function () { dispararConfetes(false); }, 350);
+      });
+    }
+  })();
 
   /* ---------- segmentos ---------- */
   var segWrap = $("#segmentos");
